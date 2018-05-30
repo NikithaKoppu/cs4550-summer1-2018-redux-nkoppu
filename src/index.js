@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDom from 'react-dom'
 import {createStore} from 'redux'
-import {Provider, connect} from 'react-redux'
+import {Provider} from 'react-redux'
 import {FIND_ALL_WIDGETS, ADD_WIDGET, SAVE, DELETE_WIDGET} from "./constants/index";
 import {widgetReducer} from "./reducers/widgetReducer";
 import {WidgetContainer} from './component/widget'

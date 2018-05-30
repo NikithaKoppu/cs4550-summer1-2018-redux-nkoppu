@@ -1,32 +1,98 @@
-import {ADD_WIDGET, DELETE_WIDGET, FIND_ALL_WIDGETS, SAVE} from "../constants";
+import * as constants from "../constants/index"
 
+Array.prototype.move
+    = function (from, to) {
+    this.splice(to, 0, this.splice(from, 1)[0]);
+};
 
-export const widgetReducer = (state = {widgets: []}, action) => {
+export const widgetReducer = (state = {widgets: [], preview: false}, action) => {
+    let newState
+    let index
     switch (action.type) {
-        case SAVE:
-            fetch('http://localhost:8080/api/widget/save', {
-                method: 'post',
-                body: JSON.stringify(state.items),
-                headers: {
-                    'content-type': 'application/json'
-                }
-            })
-        case FIND_ALL_WIDGETS:
+
+        case constants.PREVIEW:
             return {
-                widgets: action.widgets
+                widgets: state.widgets,
+                preview: !state.preview
             }
-        case DELETE_WIDGET:
+        // case constants.MOVE_UP:
+        //     index = state.indexOf(action.widget);
+        //     state.move(index, index - 1);
+        //     return state;
+        // case constants.MOVE_DOWN:
+        //     index = state.indexOf(action.widget);
+        //     state.move(index, index + 1);
+        //     return state
+
+        case constants.HEADING_TEXT_CHANGED:
+            return {
+                widgets: state.widgets.map(widget => {
+                    if(widget.id === action.id) {
+                        widget.text = action.text
+                    }
+                    return Object.assign({}, widget)
+                })
+            }
+
+        case constants.HEADING_NAME_CHANGED:
+            return {
+                widgets: state.widgets.map(widget => {
+                    if(widget.id === action.id) {
+                        widget.name = action.name
+                    }
+                    return Object.assign({}, widget)
+                })
+            }
+        case constants.HEADING_SIZE_CHANGED:
+            return {
+                widgets: state.widgets.map(widget => {
+                    if(widget.id === action.id) {
+                        widget.size = action.size
+                    }
+                    return Object.assign({}, widget)
+                })
+            }
+
+        case constants.SELECT_WIDGET_TYPE:
+            console.log(action);
+            let newState = {
+                widgets: state.widgets.filter((widget) => {
+                    if(widget.id === action.id) {
+                        widget.widgetType = action.widgetType
+                    }
+                    return true;
+                })
+            }
+            return JSON.parse(JSON.stringify(newState))
+
+        case constants.SAVE:
+            fetch('http://localhost:3000/api/widget/save', {
+                method: 'post',
+                body: JSON.stringify(state.widgets),
+                headers: {
+                    'content-type': 'application/json'}
+            })
+            return state
+        case constants.FIND_ALL_WIDGETS:
+            newState = Object.assign({}, state)
+            newState.widgets = action.widgets
+            return newState
+        case constants.DELETE_WIDGET:
             return {
                 widgets: state.widgets.filter(widget => (
                     widget.id !== action.id
                 ))
             }
-
-        case ADD_WIDGET:
+        case constants.ADD_WIDGET:
             return {
                 widgets: [
                     ...state.widgets,
-                    {id: state.widgets.length+1, text: 'New Widget'}
+                    {
+                        id: state.widgets.length + 1,
+                        text: 'New Widget',
+                        widgetType: 'Paragraph',
+                        size: '2'
+                    }
                 ]
             }
         default:
