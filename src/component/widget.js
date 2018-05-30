@@ -3,14 +3,16 @@ import {connect} from 'react-redux'
 import {DELETE_WIDGET, MOVE_DOWN, MOVE_UP} from "../constants/index"
 import * as actions from '../actions'
 
-const Heading = ({widget, preview, headingTextChanged, headingSizeChanged}) => {
+const Heading = ({widget, preview, headingNameChanged, headingTextChanged, headingSizeChanged}) => {
     let selectElem
     let inputElem
+    let inputElem2
     return(
         <div>
             <div hidden={preview}>
                 <h2> Heading {widget.size}</h2>
-                <input onChange={() => headingTextChanged(widget.id, inputElem.value)}
+                <input placeholder="Heading Text"
+                       onChange={() => headingTextChanged(widget.id, inputElem.value)}
                        value={widget.text}
                        ref={node => inputElem = node}/>
                 <select onChange={() => headingSizeChanged(widget.id, selectElem.value)}
@@ -20,8 +22,14 @@ const Heading = ({widget, preview, headingTextChanged, headingSizeChanged}) => {
                     <option value="2">Heading 2</option>
                     <option value="3">Heading 3</option>
                 </select>
+                <br/>
+                <textarea placeholder="Widget Name"
+                          onChange={() => headingNameChanged(widget.id, inputElem2.value)}
+                          value={widget.name}
+                          ref={node => inputElem2 = node}/>
             </div>
             <div hidden={!preview}>
+                <h2>Heading: {widget.name}</h2>
                 {widget.size == 1 && <h1>{widget.text}</h1>}
                 {widget.size == 2 && <h2>{widget.text}</h2>}
                 {widget.size == 3 && <h3>{widget.text}</h3>}
@@ -46,18 +54,25 @@ const stateToPropsMapper = state => ({
 })
 const HeadingContainer = connect(stateToPropsMapper, dispatchToPropsMapper)(Heading)
 
-const Paragraph = ({widget, preview, headingTextChanged}) => {
+const Paragraph = ({widget, preview, headingTextChanged, headingNameChanged}) => {
     let inputElem
+    let inputElem2
     return (
         <div>
             <div hidden={preview}>
                 <h2> Paragraph </h2>
-                <textarea onChange={() => headingTextChanged(widget.id, inputElem.value)}
-                       value={widget.text}
-                       ref={node => inputElem = node}/>
+                <textarea placeholder="Paragraph Text"
+                          onChange={() => headingTextChanged(widget.id, inputElem.value)}
+                          value={widget.text}
+                          ref={node => inputElem = node}/>
+                <br/>
+                <textarea placeholder="Widget Name"
+                          onChange={() => headingNameChanged(widget.id, inputElem2.value)}
+                          value={widget.name}
+                          ref={node => inputElem2 = node}/>
             </div>
             <div hidden={!preview}>
-                <h2> Paragraph </h2>
+                <h2> Paragraph: {widget.name} </h2>
                 {<p>{widget.text}</p>}
             </div>
         </div>
@@ -66,18 +81,25 @@ const Paragraph = ({widget, preview, headingTextChanged}) => {
 
 const ParagraphContainer = connect(stateToPropsMapper, dispatchToPropsMapper)(Paragraph)
 
-const Image = ({widget, preview, headingTextChanged}) => {
+const Image = ({widget, preview, headingTextChanged, headingNameChanged}) => {
     let inputElem
+    let inputElem2
 return (
     <div>
         <div hidden={preview}>
             <h2> Image </h2>
-            <textarea onChange={() => headingTextChanged(widget.id, inputElem.value)}
+            <textarea placeholder="Image Hyperlink"
+                      onChange={() => headingTextChanged(widget.id, inputElem.value)}
                       value={widget.text}
                       ref={node => inputElem = node}/>
+            <br/>
+            <textarea placeholder="Widget Name"
+                      onChange={() => headingNameChanged(widget.id, inputElem2.value)}
+                      value={widget.name}
+                      ref={node => inputElem2 = node}/>
         </div>
         <div hidden={!preview}>
-            <h2> Image </h2>
+            <h2> Image: {widget.name} </h2>
             {<img src={widget.text}></img>}
         </div>
     </div>
@@ -94,7 +116,10 @@ const List = ({widget, preview, listChanged, headingNameChanged, headingTextChan
         <div>
             <div hidden={preview}>
                 <h2> List </h2>
-                <textarea onChange={() => headingTextChanged(widget.id, inputElem.value)}
+                <textarea placeholder="Put each
+                 item in
+                 a separate row"
+                          onChange={() => headingTextChanged(widget.id, inputElem.value)}
                           value={widget.text}
                           ref={node => inputElem = node}/>
                 <br/>
@@ -105,13 +130,14 @@ const List = ({widget, preview, listChanged, headingNameChanged, headingTextChan
                     <option value="2">Ordered List</option>
                 </select>
                 <br/>
-                <textarea onChange={() => headingNameChanged(widget.id, inputElem2.value)}
+                <textarea placeholder="Widget Name"
+                          onChange={() => headingNameChanged(widget.id, inputElem2.value)}
                           value={widget.name}
                           ref={node => inputElem2 = node}/>
             </div>
             <div hidden={!preview}>
                 <h2> List: {widget.name} </h2>
-                {widget.listType === 1 &&
+                {widget.listType == 1 &&
                 <ul>
                     {widget.text.split("\n").map(function(item) {
                         return (
@@ -119,7 +145,7 @@ const List = ({widget, preview, listChanged, headingNameChanged, headingTextChan
                         )
                     })}
                 </ul>}
-                {widget.listType === 2 &&
+                {widget.listType == 2 &&
                 <ol>
                     {widget.text.split("\n").map(function(item) {
                         return (
@@ -143,21 +169,24 @@ const Link = ({widget, preview,linkNameChanged, headingTextChanged, headingNameC
         <div>
             <div hidden={preview}>
                 <h2> Link </h2>
-                <textarea onChange={() => headingTextChanged(widget.id, inputElem1.value)}
+                <textarea placeholder="Hyperlink"
+                          onChange={() => headingTextChanged(widget.id, inputElem1.value)}
                           value={widget.text}
                           ref={node => inputElem1 = node}/>
                  <br/>
-                <textarea onChange={() => linkNameChanged(widget.id, inputElem.value)}
+                <textarea placeholder="Link Text"
+                          onChange={() => linkNameChanged(widget.id, inputElem.value)}
                           value={widget.link}
                           ref={node => inputElem = node}/>
                 <br/>
-                <textarea onChange={() => headingNameChanged(widget.id, inputElem2.value)}
+                <textarea placeholder="Widget Name"
+                          onChange={() => headingNameChanged(widget.id, inputElem2.value)}
                           value={widget.name}
                           ref={node => inputElem2 = node}/>
             </div>
             <div hidden={!preview}>
-                <h2> Link: </h2>
-                {<a href={widget.text}>{widget.name}</a>}
+                <h2> Link: {widget.name} </h2>
+                {<a href={widget.text}>{widget.link}</a>}
             </div>
         </div>
     )
