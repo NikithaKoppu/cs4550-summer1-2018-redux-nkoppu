@@ -33,8 +33,8 @@ export const listChanged = (dispatch, widgetId, newType) => (
         listType: newType})
 )
 export const findAllWidgets = dispatch => {
-    fetch('http://localhost:3000/api/widget')
-        .then(response => (response.json()))
+    fetch('http://localhost:8080/api/widget')
+        .then(response => response.json())
         .then(widgets => dispatch({
             type: constants.FIND_ALL_WIDGETS,
             widgets: widgets }))
@@ -49,3 +49,9 @@ export const preview = dispatch => (
     dispatch({type: constants.PREVIEW})
 )
 
+export const moveUp = dispatch => (
+    dispatch({type: constants.MOVE_UP})
+)
+export const moveDown = dispatch => (
+    dispatch({type: constants.MOVE_DOWN})
+)

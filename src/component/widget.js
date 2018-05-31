@@ -3,6 +3,24 @@ import {connect} from 'react-redux'
 import {DELETE_WIDGET, MOVE_DOWN, MOVE_UP} from "../constants/index"
 import * as actions from '../actions'
 
+
+const dispatchToPropsMapper = dispatch => ({
+    headingTextChanged: (widgetId, newText) =>
+        actions.headingTextChanged(dispatch, widgetId, newText),
+    headingSizeChanged: (widgetId, newSize) =>
+        actions.headingSizeChanged(dispatch, widgetId, newSize),
+    headingNameChanged: (widgetId, newName) =>
+        actions.headingNameChanged(dispatch, widgetId, newName),
+    linkNameChanged: (widgetId, newLink) =>
+        actions.linkNameChanged(dispatch, widgetId, newLink),
+    listChanged: (widgetId, newType) =>
+        actions.listChanged(dispatch, widgetId, newType)
+
+})
+const stateToPropsMapper = state => ({
+    preview: state.preview
+})
+
 const Heading = ({widget, preview, headingNameChanged, headingTextChanged, headingSizeChanged}) => {
     let selectElem
     let inputElem
@@ -37,21 +55,7 @@ const Heading = ({widget, preview, headingNameChanged, headingTextChanged, headi
         </div>
     )
 }
-const dispatchToPropsMapper = dispatch => ({
-    headingTextChanged: (widgetId, newText) =>
-        actions.headingTextChanged(dispatch, widgetId, newText),
-    headingSizeChanged: (widgetId, newSize) =>
-        actions.headingSizeChanged(dispatch, widgetId, newSize),
-    headingNameChanged: (widgetId, newName) =>
-        actions.headingNameChanged(dispatch, widgetId, newName),
-    linkNameChanged: (widgetId, newLink) =>
-        actions.linkNameChanged(dispatch, widgetId, newLink),
-    listChanged: (widgetId, newType) =>
-        actions.listChanged(dispatch, widgetId, newType)
-})
-const stateToPropsMapper = state => ({
-    preview: state.preview
-})
+
 const HeadingContainer = connect(stateToPropsMapper, dispatchToPropsMapper)(Heading)
 
 const Paragraph = ({widget, preview, headingTextChanged, headingNameChanged}) => {
@@ -61,7 +65,7 @@ const Paragraph = ({widget, preview, headingTextChanged, headingNameChanged}) =>
         <div>
             <div hidden={preview}>
                 <h2> Paragraph </h2>
-                <textarea placeholder="Paragraph Text"
+                <textarea placeholder="Paragraph text"
                           onChange={() => headingTextChanged(widget.id, inputElem.value)}
                           value={widget.text}
                           ref={node => inputElem = node}/>
@@ -216,10 +220,10 @@ const Widget = ({widget, preview, dispatch}) => {
                 </select>
 
                 <button onClick={e => (
-                    dispatch({type: MOVE_UP, id: widget.id})
+                    dispatch({type: MOVE_UP, widget: widget})
                 )}>^</button>
                 <button onClick={e => (
-                    dispatch({type: MOVE_DOWN, id: widget.id})
+                    dispatch({type: MOVE_DOWN, widget: widget})
                 )}>v</button>
                 <button onClick={e => (
                     dispatch({type: DELETE_WIDGET, id: widget.id})
@@ -235,6 +239,8 @@ const Widget = ({widget, preview, dispatch}) => {
         </li>
     )
 }
+
+
 const WidgetContainer = connect(state => ({
     preview: state.preview
 }))(Widget)

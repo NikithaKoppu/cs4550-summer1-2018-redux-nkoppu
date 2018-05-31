@@ -15,14 +15,29 @@ export const widgetReducer = (state = {widgets: [], preview: false}, action) => 
                 widgets: state.widgets,
                 preview: !state.preview
             }
-        // case constants.MOVE_UP:
-        //     index = state.indexOf(action.widget);
-        //     state.move(index, index - 1);
-        //     return state;
-        // case constants.MOVE_DOWN:
-        //     index = state.indexOf(action.widget);
-        //     state.move(index, index + 1);
-        //     return state
+        case constants.MOVE_UP:
+            index = state.indexOf(action.widget);
+            state.move(index, index - 1);
+            state.splice(0);
+            return {
+                widgets: state.widgets.map(widget => {
+                    if(widget.id === action.id) {
+                        widget.index = action.index
+                    }
+                    return Object.assign({}, widget)
+                })
+            }
+        case constants.MOVE_DOWN:
+            index = state.indexOf(action.widget);
+            state.move(index, index + 1);
+            return {
+                widgets: state.widgets.map(widget => {
+                    if(widget.id === action.id) {
+                        widget.index = action.index
+                    }
+                    return Object.assign({}, widget)
+                })
+            }
 
         case constants.HEADING_TEXT_CHANGED:
             return {
@@ -85,7 +100,7 @@ export const widgetReducer = (state = {widgets: [], preview: false}, action) => 
             return JSON.parse(JSON.stringify(newState))
 
         case constants.SAVE:
-            fetch('http://localhost:3000/api/widget/save', {
+            fetch('http://localhost:8080/api/widget/save', {
                 method: 'post',
                 body: JSON.stringify(state.widgets),
                 headers: {
@@ -113,7 +128,8 @@ export const widgetReducer = (state = {widgets: [], preview: false}, action) => 
                         size: '2',
                         name: 'New Name',
                         link: 'Link Name',
-                        listType: '1'
+                        listType: '1',
+                        index: state.widgets.length + 1
                     }
                 ]
             }
